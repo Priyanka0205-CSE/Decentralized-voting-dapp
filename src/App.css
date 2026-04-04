@@ -1,0 +1,249 @@
+import { useState, useEffect } from "react";
+import { ethers } from "ethers";
+import VotingDAppProject from "./VotingDApp.json"; // Make sure file name matches exactly
+
+const CONTRACT_ADDRESS = "0xC51d939D9242043Abf95F639AcB725E8f4A8de35"; // Your deployed contract
+const ADMIN_ADDRESS = "0x48a42Fd5c82ef6927551f43EB531151aDe1a1C85"; // Admin wallet
+
+function App() {
+  const [connected, setConnected] = useState(false);
+  const [user, setUser] = useState(null);
+  const [voted, setVoted] = useState(false);
+  const [newCandidate, setNewCandidate] = useState("");
+  const [panels, setPanels] = useState([]);
+  const [provider, setProvider] = useState(null);
+  const [contract, setContract] = useState(null);
+
+  const isAdmin = user?.toLowerCase() === ADMIN_ADDRESS.toLowerCase();
+
+  // Timer
+  const [currentTime, setCurrentTime] = useState(new Date());
+  useEffect(() => {
+    const interval = setInterval(() => setCurrentTime(new Date()), 1000);
+    return () => clearInterval(interval);
+  }, []);
+
+  // Connect Wallet
+  const connectWallet = async () => {
+    if (!window.ethereum) return alert("MetaMask not detected");
+    try {
+      const accounts = await window.ethereum.request({ method: "eth_requestAccounts" });
+      setUser(accounts[0]);
+      setConnected(true);
+
+      const tempProvider = new ethers.BrowserProvider(window.ethereum);
+      setProvider(tempProvider);
+
+      const tempContract = new ethers.Contract(
+        CONTRACT_ADDRESS,
+        VotingDAppProject,
+        await tempProvider.getSigner()
+      );
+      setContract(tempContract);
+
+      // Check if user already voted
+      if (!isAdmin) {
+        const hasVoted = await tempContract.hasVoted(accounts[0]);
+        setVoted(hasVoted);
+      }
+    } catch (err) {
+      console.error(err);
+      alert("Error connecting wallet");
+    }
+  };
+
+  // Voting hours
+  const start = new Date(currentTime);
+  start.setHours(10, 0, 0, 0);
+  const end = new Date(currentTime);
+  end.setHours(16, 0, 0, 0);
+  const isVotingOpen = currentTime >= start && currentTime <= end;
+
+  // Vote function
+  const vote = async (panelIndex, candidateIndex) => {
+    if (!isVotingOpen) return alert("Voting Closed ⛔");
+    if (voted) return alert("You can vote only once ✅");
+
+    try {
+      if (!contract) return alert("Connect wallet first");
+
+      const tx = await contract.vote(panelIndex, candidateIndex); // match your contract
+      await tx.wait();
+
+      // Update frontend votes
+      const updated = [...panels];
+      updated[panelIndex].candidates[candidateIndex].votes += 1;
+      setPanels(updated);
+      setVoted(true);
+
+      alert("Voted successfully ✅");
+    } catch (err) {
+      console.error(err);
+      alert("Failed to vote ⛔ Check MetaMask and gas fees");
+    }
+  };
+
+  // Admin: Add candidate
+  const addCandidate = async () => {
+    if (!newCandidate.trim()) return;
+    try {
+      if (!contract) return alert("Connect wallet first");
+      const tx = await contract.addCandidate(0, newCandidate); // electionId = 0
+      await tx.wait();
+
+      const updated = [...panels];
+      updated[0].candidates.push({ name: newCandidate, votes: 0 });
+      setPanels(updated);
+      setNewCandidate("");
+      alert("Candidate added ✅");
+    } catch (err) {
+      console.error(err);
+      alert("Failed to add candidate ⛔");
+    }
+  };
+
+  // Admin: Delete candidate (local frontend)
+  const deleteCandidate = (pIndex, cIndex) => {
+    const updated = [...panels];
+    updated[pIndex].candidates.splice(cIndex, 1);
+    setPanels(updated);
+  };
+
+  // Total votes
+  const totalVotes = panels.reduce(
+    (sum, panel) => sum + panel.candidates.reduce((s, c) => s + c.votes, 0),
+    0
+  );
+
+  // Default panels
+  useEffect(() => {
+    setPanels([
+      {
+        name: "🤝 Unity Panel",
+        candidates: [
+          { name: "Priyanka", votes: 0 },
+          { name: "Raksha", votes: 0 },
+          { name: "Nandhitha", votes: 0 },
+        ],
+      },
+      {
+        name: "✨ Progress Panel",
+        candidates: [
+          { name: "Bhuvan", votes: 0 },
+          { name: "Gagan", votes: 0 },
+          { name: "Chinmayee", votes: 0 },
+        ],
+      },
+      {
+        name: "👁️ Vision Panel",
+        candidates: [
+          { name: "Gagana", votes: 0 },
+          { name: "Teja", votes: 0 },
+          { name: "Yukthi", votes: 0 },
+        ],
+      },
+    ]);
+  }, []);
+
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-black via-purple-950 to-indigo-950 text-white">
+      {/* Navbar */}
+      <div className="flex justify-between items-center px-8 py-5 backdrop-blur-xl bg-white/5 border-b border-white/10">
+        <h1 className="text-2xl font-bold text-white">VoteChain 🗳</h1>
+        <button
+          onClick={connectWallet}
+          className="bg-purple-600 px-5 py-2 rounded-xl hover:bg-purple-700"
+        >
+          {connected ? "Connected ✅" : "Connect Wallet"}
+        </button>
+      </div>
+
+      {/* Main */}
+      <div className="p-10">
+        <h2 className="text-5xl font-extrabold text-center mb-10 text-white">
+          🗳 President Election
+        </h2>
+
+        {/* Admin: Add Candidate */}
+        {isAdmin && (
+          <div className="flex gap-3 justify-center mb-8">
+            <input
+              value={newCandidate}
+              onChange={(e) => setNewCandidate(e.target.value)}
+              placeholder="Enter candidate"
+              className="px-4 py-2 rounded-xl text-black"
+            />
+            <button
+              onClick={addCandidate}
+              className="bg-green-500 px-5 py-2 rounded-xl hover:bg-green-600"
+            >
+              Add
+            </button>
+          </div>
+        )}
+
+        {/* Timer */}
+        <div className="text-center mb-10 bg-white/10 p-4 rounded-xl inline-block mx-auto">
+          <p>🟢 Start: 10:00 AM</p>
+          <p>🔴 End: 4:00 PM</p>
+          <p className="text-sm text-gray-300">
+            Current: {currentTime.toLocaleTimeString()}
+          </p>
+        </div>
+
+        {/* Voting Status */}
+        <div className="text-center mb-10">
+          <p className="text-lg">{isVotingOpen ? "🟢 Voting Open" : "🔴 Voting Closed"}</p>
+        </div>
+
+        {/* Panels */}
+        <div className="grid md:grid-cols-3 gap-10">
+          {panels.map((panel, pIndex) => (
+            <div
+              key={pIndex}
+              className="bg-white/5 backdrop-blur-2xl p-6 rounded-3xl border border-white/10 shadow-2xl hover:scale-105 transition"
+            >
+              <h3 className="text-2xl text-yellow-400 text-center font-bold mb-5">{panel.name}</h3>
+
+              {panel.candidates.map((c, cIndex) => (
+                <div
+                  key={cIndex}
+                  className="bg-black/40 p-4 rounded-xl mb-4 border border-purple-500/30"
+                >
+                  <h4 className="text-lg font-semibold">{c.name}</h4>
+                  <button
+                    onClick={() => vote(pIndex, cIndex)}
+                    disabled={!connected || !isVotingOpen || voted}
+                    className="mt-3 w-full bg-blue-600 py-2 rounded-xl hover:bg-blue-700"
+                  >
+                    Vote
+                  </button>
+
+                  {isAdmin && (
+                    <button
+                      onClick={() => deleteCandidate(pIndex, cIndex)}
+                      className="mt-2 w-full bg-red-500 py-2 rounded-xl hover:bg-red-600"
+                    >
+                      Delete
+                    </button>
+                  )}
+
+                  <p className="text-sm mt-2 text-gray-300">Votes: {c.votes}</p>
+                </div>
+              ))}
+            </div>
+          ))}
+        </div>
+
+        {/* Total votes */}
+        <div className="mt-12 text-center">
+          <button className="bg-green-500 px-8 py-3 rounded-2xl text-lg font-semibold hover:bg-green-600">
+            Total Votes: {totalVotes}
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+export default App;
