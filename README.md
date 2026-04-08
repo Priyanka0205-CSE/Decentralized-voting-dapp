@@ -1,70 +1,144 @@
-# Getting Started with Create React App
+🗳️ VoteChain — Decentralized Voting DApp
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+A secure, transparent, and tamper-proof voting system built on the Ethereum blockchain 🔗
+Ensuring fair elections with OTP verification + wallet-based authentication
 
-## Available Scripts
+🌐 Overview
 
-In the project directory, you can run:
+VoteChain is a decentralized application (DApp) that allows users to vote securely using blockchain technology.
+Each vote is stored permanently on the blockchain, ensuring transparency, trust, and immutability.
 
-### `npm start`
+Unlike traditional systems, this platform removes central authority and prevents manipulation.
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+🚀 Features
+🔐 OTP-Based Authentication (Email Verification)
+🦊 MetaMask Wallet Integration
+✅ Admin Whitelisting System
+🗳️ Secure Voting via Smart Contract
+🔍 Transparent & Tamper-Proof Results
+🌍 Runs on Ethereum Sepolia Testnet
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
 
-### `npm test`
+📸 Screenshots
+👤 User Panel
+![WhatsApp Image 2026-04-08 at 9 55 29 PM](https://github.com/user-attachments/assets/5d79726e-53f0-4aad-84f0-98e234ec67df)
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+![WhatsApp Image 2026-04-08 at 9 56 41 PM](https://github.com/user-attachments/assets/efd6cbb6-ff76-4cef-ac32-c7a7a7053de6)
 
-### `npm run build`
+![WhatsApp Image 2026-04-08 at 10 00 30 PM](https://github.com/user-attachments/assets/cc5b127d-1a30-4f25-9528-65d16b19b82f)
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+🔐 Connect wallet using MetaMask
+📧 Enter email & verify OTP
+🗳️ View candidates and cast vote
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+🛠️ Admin Panel
 
-### `npm run eject`
+![WhatsApp Image 2026-04-08 at 9 58 30 PM](https://github.com/user-attachments/assets/83bc24ac-0016-453c-801f-9085678b113d)
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+✅ Whitelist user wallet addresses
+🔍 Monitor voting activity
+⚙️ Manage system securely
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+🛠️ Tech Stack
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+Frontend
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+React.js
+Ethers.js
 
-## Learn More
+Backend
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+Node.js
+Express.js
+Nodemailer
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+Blockchain
 
-### Code Splitting
+Solidity (^0.8.20)
+Ethereum (Sepolia Testnet)
+⚙️ Prerequisites
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+Make sure you have:
 
-### Analyzing the Bundle Size
+Node.js (v16 or above)
+MetaMask browser extension
+Gmail account (with 2-Step Verification)
+Sepolia testnet ETH:
+https://sepoliafaucet.com
+https://faucet.quicknode.com/ethereum/sepolia
+🚀 Getting Started
+1️⃣ Clone Repository
+git clone https://github.com/yourusername/votechain.git
+cd votechain
+2️⃣ Deploy Smart Contract
+Open Remix IDE → https://remix.ethereum.org/
+Paste VotingDApp.sol
+Compile with Solidity ^0.8.20
+Connect MetaMask (Sepolia Testnet)
+Deploy using Injected Provider
+Copy:
+Contract Address
+ABI
+3️⃣ Configure Frontend
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+Update in voting-dapp/src/App.js:
 
-### Making a Progressive Web App
+const CONTRACT_ADDRESS = "your_contract_address";
+const ADMIN_ADDRESS = "your_wallet_address";
+const BACKEND_URL = "http://localhost:5000";
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+4️⃣ Run Frontend
+cd voting-dapp
+npm install
+npm start
 
-### Advanced Configuration
+Runs on 👉 http://localhost:3000
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
+5️⃣ Setup Gmail App Password
+Go to https://myaccount.google.com
+Enable 2-Step Verification
+Create App Password
+Copy the 16-character password
 
-### Deployment
+6️⃣ Run Backend
+cd votechain-backend
+npm init -y
+npm install express nodemailer cors dotenv
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
+Create .env:
 
-### `npm run build` fails to minify
+EMAIL_USER=yourgmail@gmail.com
+EMAIL_PASS=your_app_password
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+Start server:
+
+node server.js
+
+Runs on 👉 http://localhost:5000
+
+🔄 Voting Flow
+User connects MetaMask wallet
+Enters email → receives OTP
+OTP verification completed
+System checks whitelist status
+Admin whitelists wallet (if needed)
+User gains voting access
+Vote is cast via blockchain transaction
+Results are transparent and immutable
+
+
+🔐 Security Highlights
+✔️ Double-layer authentication (Wallet + OTP)
+✔️ Only whitelisted users can vote
+✔️ Blockchain ensures no data tampering
+✔️ Fully decentralized — no central control
+
+👩‍💻 Author
+
+Priyanka
+B.Tech Student | Blockchain Enthusiast 🚀
+
+
+
+
