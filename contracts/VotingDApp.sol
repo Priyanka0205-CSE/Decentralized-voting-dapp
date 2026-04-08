@@ -4,6 +4,13 @@ pragma solidity ^0.8.20;
 contract VotingDApp {
     address public admin;
 
+    //  NEW: Whitelist mapping
+    mapping(address => bool) public isWhitelisted;
+
+    //  NEW: Events for whitelist actions
+    event AddedToWhitelist(address indexed user);
+    event RemovedFromWhitelist(address indexed user);
+
     struct Candidate {
         string name;
         uint voteCount;
@@ -21,6 +28,12 @@ contract VotingDApp {
 
     modifier onlyAdmin() {
         require(msg.sender == admin, "Only admin");
+        _;
+    }
+
+    //  NEW: Modifier to check whitelist
+    modifier onlyWhitelisted() {
+        require(isWhitelisted[msg.sender], "Not whitelisted. Verify email first.");
         _;
     }
 
@@ -49,7 +62,20 @@ contract VotingDApp {
         elections[2].candidates.push(Candidate("Yukthi", 0, true));
     }
 
-    function vote(uint _electionId, uint _candidateId) public {
+    //  NEW: Admin whitelists a user after OTP verification
+    function addToWhitelist(address _user) public onlyAdmin {
+        isWhitelisted[_user] = true;
+        emit AddedToWhitelist(_user);
+    }
+
+    //  NEW: Admin can remove from whitelist
+    function removeFromWhitelist(address _user) public onlyAdmin {
+        isWhitelisted[_user] = false;
+        emit RemovedFromWhitelist(_user);
+    }
+
+    //  UPDATED: vote() now requires whitelist
+    function vote(uint _electionId, uint _candidateId) public onlyWhitelisted {
         require(_electionId < elections.length, "Invalid election ID");
         Election storage e = elections[_electionId];
         require(e.isActive, "Election is not active");
@@ -60,13 +86,11 @@ contract VotingDApp {
         e.hasVoted[msg.sender] = true;
     }
 
-    // ✅ Add candidate
     function addCandidate(uint _electionId, string memory _name) public onlyAdmin {
         require(_electionId < elections.length, "Invalid election ID");
         elections[_electionId].candidates.push(Candidate(_name, 0, true));
     }
 
-    // ✅ NEW: Delete candidate permanently on blockchain
     function removeCandidate(uint _electionId, uint _candidateId) public onlyAdmin {
         require(_electionId < elections.length, "Invalid election ID");
         require(_candidateId < elections[_electionId].candidates.length, "Invalid candidate");
