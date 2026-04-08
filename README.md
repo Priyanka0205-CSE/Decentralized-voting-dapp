@@ -21,7 +21,8 @@ Unlike traditional systems, this platform removes central authority and prevents
 - ✅ **Admin Whitelisting System**  
 - 🗳️ **Secure Voting via Smart Contract**  
 - 🔍 **Transparent & Tamper-Proof Results**  
-- 🌍 **Runs on Ethereum Sepolia Testnet**  
+- 🌍 **Runs on Ethereum Sepolia Testnet**
+- 👤 **admin can add and delete candidates**
 
 ---
 
