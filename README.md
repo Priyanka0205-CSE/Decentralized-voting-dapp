@@ -87,7 +87,7 @@ Unlike traditional systems, this platform removes central authority and prevents
 git clone https://github.com/yourusername/votechain.git
 cd votechain
 
-**2️⃣ Deploy Smart Contract**
+2️⃣ Deploy Smart Contract
 
 Open Remix IDE → https://remix.ethereum.org/
 Paste VotingDApp.sol
@@ -100,7 +100,7 @@ Copy:
 Contract Address
 ABI
 
-**3️⃣ Configure Frontend**
+3️⃣ Configure Frontend
 
 Update in voting-dapp/src/App.js:
 
@@ -108,7 +108,7 @@ const CONTRACT_ADDRESS = "your_contract_address";
 const ADMIN_ADDRESS = "your_wallet_address";
 const BACKEND_URL = "http://localhost:5000";
 
-**4️⃣ Run Frontend**
+4️⃣ Run Frontend
 
 cd voting-dapp
 npm install
@@ -116,31 +116,31 @@ npm start
 
 Runs on 👉 http://localhost:3000
 
-**5️⃣ Setup Gmail App Password**
+5️⃣ Setup Gmail App Password
 
 Go to https://myaccount.google.com
 Enable 2-Step Verification
 Create App Password
 Copy the 16-character password
 
-**6️⃣ Run Backend**
+6️⃣ Run Backend
 
 cd votechain-backend
 npm init -y
 npm install express nodemailer cors dotenv
 
-**Create .env:**
+Create .env:
 
 EMAIL_USER=yourgmail@gmail.com
 EMAIL_PASS=your_app_password
 
-**Start server:**
+Start server:
 
 node server.js
 
 Runs on 👉 http://localhost:5000
 
-**🔄 Voting Flow**
+🔄 Voting Flow
 
 User connects MetaMask wallet
 Enters email → receives OTP
@@ -151,14 +151,13 @@ User gains voting access
 Vote is cast via blockchain transaction
 Results are transparent and immutable
 
-**🔐 Security Highlights**
+🔐 Security Highlights
 
 ✔️ Double-layer authentication (Wallet + OTP)
 ✔️ Only whitelisted users can vote
 ✔️ Blockchain ensures no data tampering
 ✔️ Fully decentralized — no central control
 
-**👩‍💻 Author**
-
+👩‍💻 Author
 Priyanka
 B.Tech Student | Blockchain Enthusiast 🚀
